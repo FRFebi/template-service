@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package proto;
+
+option go_package = "/proto";
+
+service BookService {
+    rpc CreateBook(CreateBookRequest) returns (Book);
+    rpc ShowBooks(EmptyRequest) returns (ShowBookResponse);
+} 
+
+message EmptyRequest{}
+
+message CreateBookRequest {
+    string Name = 1;
+}
+
+message Book {
+    string Id = 1;
+    string Name = 2;
+    string CreatedAt = 3;
+    string UpdatedAt = 4;
+    string DeletedAt = 5;
+}
+
+message ShowBookResponse {
+    repeated Book Books = 1;
+}
