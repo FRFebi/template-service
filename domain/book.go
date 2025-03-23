@@ -1,6 +1,8 @@
 package domain
 
-import "time"
+import (
+	"time"
+)
 
 type Book struct {
 	Id        string
@@ -12,11 +14,15 @@ type Book struct {
 
 type BookRepository interface {
 	Create(book *Book) (*Book, error)
-	Show() ([]*Book, error)
+	FindAll() ([]*Book, error)
+	FindById(string) (*Book, error)
 	Update(*Book) (*Book, error)
+	Delete(*Book) error
 }
 
 type BookUsecase interface {
 	CreateBook(*Book) (*Book, error)
 	ShowBooks() ([]*Book, error)
+	UpdateBook(*Book) (*Book, error)
+	DeleteBook(*Book) error
 }
