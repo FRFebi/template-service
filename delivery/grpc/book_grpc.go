@@ -60,3 +60,38 @@ func (g *BookGRPC) ShowBooks(ctx context.Context, req *proto.EmptyRequest) (*pro
 
 	return res, nil
 }
+
+func (g *BookGRPC) UpdateBook(ctx context.Context, req *proto.UpdateBookRequest) (*proto.Book, error) {
+	book := &domain.Book{
+		Id:   req.Id,
+		Name: req.Name,
+	}
+
+	book, err := g.BookUsecase.UpdateBook(book)
+	if err != nil {
+		return nil, err
+	}
+
+	res := &proto.Book{
+		Id:        book.Id,
+		Name:      book.Name,
+		CreatedAt: helper.SafeTimeString(book.CreateAt),
+		UpdatedAt: helper.SafeTimeString(book.UpdateAt),
+		DeletedAt: helper.SafeTimeString(book.DeletedAt),
+	}
+
+	return res, nil
+}
+
+func (g *BookGRPC) DeleteBook(ctx context.Context, req *proto.DeleteBookRequest) (*proto.EmptyResponse, error) {
+	book := &domain.Book{
+		Id: req.Id,
+	}
+
+	err := g.BookUsecase.DeleteBook(book)
+	if err != nil {
+		return nil, err
+	}
+
+	return &proto.EmptyResponse{}, nil
+}

@@ -30,13 +30,22 @@ func (r *BookRepository) Create(book *domain.Book) (*domain.Book, error) {
 	return newBook, nil
 }
 
-func (r *BookRepository) Show() ([]*domain.Book, error) {
+func (r *BookRepository) FindAll() ([]*domain.Book, error) {
 	var books []*domain.Book
 	err := r.db.Find(&books).Error
 	if err != nil {
 		return nil, err
 	}
 	return books, nil
+}
+
+func (r *BookRepository) FindById(id string) (*domain.Book, error) {
+	var book domain.Book
+	err := r.db.Where("id = ?", id).First(&book).Error
+	if err != nil {
+		return nil, err
+	}
+	return &book, nil
 }
 
 func (r *BookRepository) Update(book *domain.Book) (*domain.Book, error) {
@@ -46,4 +55,12 @@ func (r *BookRepository) Update(book *domain.Book) (*domain.Book, error) {
 	}
 
 	return book, nil
+}
+
+func (r *BookRepository) Delete(book *domain.Book) error {
+	err := r.db.Delete(book).Error
+	if err != nil {
+		return err
+	}
+	return nil
 }

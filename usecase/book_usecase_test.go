@@ -36,3 +36,21 @@ func TestShowBook(t *testing.T) {
 		assert.NotNil(t, books)
 	})
 }
+
+func TestUpdateBook(t *testing.T) {
+	db := infrastructure.ConnectDB()
+	bookRepo := repository.NewBookRepository(db)
+	bookUC := NewBookUsecase(bookRepo)
+	book := &domain.Book{
+		Name: "Science X",
+	}
+
+	t.Run("Update a Book", func(t *testing.T) {
+		book, err := bookUC.CreateBook(book)
+		assert.Nil(t, err)
+
+		book.Name = "Science G"
+		_, err = bookUC.UpdateBook(book)
+		assert.Nil(t, err)
+	})
+}

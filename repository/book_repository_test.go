@@ -23,14 +23,24 @@ func (r *repoBookMock) Create(book *domain.Book) (*domain.Book, error) {
 	return args.Get(0).(*domain.Book), args.Error(1)
 }
 
-func (r *repoBookMock) Show() ([]*domain.Book, error) {
+func (r *repoBookMock) FindAll() ([]*domain.Book, error) {
 	args := r.Called()
 	return args.Get(0).([]*domain.Book), args.Error(1)
+}
+
+func (r *repoBookMock) FindById(id string) (*domain.Book, error) {
+	args := r.Called(id)
+	return args.Get(0).(*domain.Book), args.Error(1)
 }
 
 func (r *repoBookMock) Update(book *domain.Book) (*domain.Book, error) {
 	args := r.Called(book)
 	return args.Get(0).(*domain.Book), args.Error(1)
+}
+
+func (r *repoBookMock) Delete(book *domain.Book) error {
+	args := r.Called(book)
+	return args.Error(0)
 }
 
 func TestCreateBook(t *testing.T) {
@@ -58,7 +68,7 @@ func TestShowBook(t *testing.T) {
 	db := infrastructure.ConnectDB()
 	bookRepo := NewBookRepository(db)
 	t.Run("Show a Book", func(t *testing.T) {
-		books, err := bookRepo.Show()
+		books, err := bookRepo.FindAll()
 		assert.Nil(t, err)
 		assert.NotNil(t, books)
 	})
@@ -113,5 +123,22 @@ func TestUpdateBook(t *testing.T) {
 		book, err = repoBook.Update(book)
 		assert.Nil(t, err)
 		assert.Equal(t, "Correction", book.Name)
+	})
+}
+
+func TestDeleteBook(t *testing.T) {
+
+	db := infrastructure.ConnectDB()
+	repoBook := NewBookRepository(db)
+	book := &domain.Book{
+		Name: "Buku Baru",
+	}
+
+	t.Run("Delete a Book", func(t *testing.T) {
+		book, err := repoBook.Create(book)
+		assert.Nil(t, err)
+
+		err = repoBook.Delete(book)
+		assert.Nil(t, err)
 	})
 }
