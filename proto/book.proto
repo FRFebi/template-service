@@ -7,9 +7,12 @@ option go_package = "/proto";
 service BookService {
     rpc CreateBook(CreateBookRequest) returns (Book);
     rpc ShowBooks(EmptyRequest) returns (ShowBookResponse);
+    rpc UpdateBook(UpdateBookRequest) returns (Book);
+    rpc DeleteBook(DeleteBookRequest) returns (EmptyResponse);
 } 
 
 message EmptyRequest{}
+message EmptyResponse{}
 
 message CreateBookRequest {
     string Name = 1;
@@ -25,4 +28,13 @@ message Book {
 
 message ShowBookResponse {
     repeated Book Books = 1;
+}
+
+message UpdateBookRequest {
+    string Id = 1;
+    string Name = 2;
+}
+
+message DeleteBookRequest {
+    string Id = 1;
 }
